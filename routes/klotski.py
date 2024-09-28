@@ -18,52 +18,57 @@ class Block:
 
 
 
-def solve():
-    for i in range(len(data)):
-        mp = data[i]["board"]
-        move = data[i]["moves"]
-        location = {}
-
-        for j in range(20):
-            cur_y = int(j / 4) #row
-            cur_x = int(j % 4) #column
-            if(not(mp[j] == "@")):
-                if not(mp[j] in location):
-                    location[mp[j]] = Block(cur_x, cur_y)
-                else:
-                    location[mp[j]].width = max(location[mp[j]].width, cur_x - location[mp[j]].x + 1)
-                    location[mp[j]].length = max(location[mp[j]].length, cur_y-location[mp[j]].y + 1)
+def solve(data):
 
 
 
-        
-        for i in range(int(len(move)/2)):
-            dir = move[2*i+1]
-            if (dir == "N"):
-                location[move[2*i]].y-=1
-            elif(dir == "E"):
-                location[move[2*i]].x+=1
-            elif(dir == "S"):
-                location[move[2*i]].y+=1
+    mp = data["board"]
+    move = data["moves"]
+    location = {}
+
+    for j in range(20):
+        cur_y = int(j / 4) #row
+        cur_x = int(j % 4) #column
+        if(not(mp[j] == "@")):
+            if not(mp[j] in location):
+                location[mp[j]] = Block(cur_x, cur_y)
             else:
-                location[move[2*i]].x-=1
+                location[mp[j]].width = max(location[mp[j]].width, cur_x - location[mp[j]].x + 1)
+                location[mp[j]].length = max(location[mp[j]].length, cur_y-location[mp[j]].y + 1)
 
 
-        location_list = "@"*20
 
-        for key,value in location.items():
-            for i in range(int(value.length)):
-                for j in range(int(value.width)):
-                    loc = int(value.x+j+(value.y+i)*4)
-                    location_list = location_list[:loc] + key + location_list[loc+1:]
+    
+    for i in range(int(len(move)/2)):
+        dir = move[2*i+1]
+        if (dir == "N"):
+            location[move[2*i]].y-=1
+        elif(dir == "E"):
+            location[move[2*i]].x+=1
+        elif(dir == "S"):
+            location[move[2*i]].y+=1
+        else:
+            location[move[2*i]].x-=1
 
-        return location_list
+
+    location_list = "@"*20
+
+    for key,value in location.items():
+        for i in range(int(value.length)):
+            for j in range(int(value.width)):
+                loc = int(value.x+j+(value.y+i)*4)
+                location_list = location_list[:loc] + key + location_list[loc+1:]
+
+    return location_list
+
+
 
 @app.route('/klotski', methods=['POST'])
-def evaluate():
+def klotski():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
 
+    print(data)
 
 
     ans = []
@@ -71,7 +76,6 @@ def evaluate():
         ans.append(solve(data[i]))
     #ans holds result
 
-    input_value = data.get("input")
-    result = input_value * input_value
-    logging.info("My result :{}".format(result))
-    return json.dumps(result)
+
+
+    return json.dumps(ans)
