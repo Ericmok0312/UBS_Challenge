@@ -472,5 +472,6 @@ def square():
             ans.append(result.strip("\""))
         else:
             ans.append("ERROR at line " + str(index + 1))
+            break
     # print({"output": ans})
     return jsonify({"output": ans})
