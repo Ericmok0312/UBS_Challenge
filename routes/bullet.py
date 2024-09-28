@@ -11,10 +11,13 @@ def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
     if time == longest_fly:
         return True
     if time + 1 not in b_map[me_y][me_x]:
+        flag = False
         for val in b_map[me_y][me_x]:
             if val > time:
+                flag = True
                 break
-        return True
+        if not flag:
+            return True
     if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1] and time not in b_map[me_y][me_x - 1]:
         ans.append("l")
         instruct_no += 1
@@ -54,7 +57,7 @@ def solve(data):
         i = i + 1
     row = row + 1
     i = i + 1
-    while i in range(i, len(data) - 1):
+    for i in range(i, len(data) - 1):
         row = row + 1
         i = i + col + 1
     b_map = []
@@ -108,8 +111,11 @@ def solve(data):
 @app.route('/dodge', methods=['POST'])
 def bullet():
     data = request.get_data(as_text = True)
+    logging.info("data sent for evaluation {}".format(data))
     solved, ans = solve(data)
     if solved:
-        return json.dumps({"instructions": ans})
+        json_response = json.dumps({"instructions": ans})
+        return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
     else:
-        return json.dumps({"instructions": None})
+        json_response = json.dumps({"instructions": None})
+        return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
