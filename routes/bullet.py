@@ -1,3 +1,7 @@
+from flask import Flask, request, jsonify
+from collections import deque
+import copy
+
 import json
 import logging
 
@@ -5,117 +9,106 @@ from flask import request
 
 from routes import app
 
-logger = logging.getLogger(__name__)
+# Directions mapping
+DIRS = {
+    'u': (-1, 0),
+    'd': (1, 0),
+    'l': (0, -1),
+    'r': (0, 1)
+}
 
-def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
-    if time == longest_fly:
-        return True
-    if time + 1 not in b_map[me_y][me_x]:
-        flag = False
-        for val in b_map[me_y][me_x]:
-            if val > time:
-                flag = True
-                break
-        if not flag:
-            return True
-    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1] and time not in b_map[me_y][me_x - 1]:
-        ans.append("l")
-        instruct_no += 1
-        if walk_map(b_map, me_x - 1, me_y, longest_fly, time + 1, ans, instruct_no):
-            return True
-        else:
-            ans = ans[0:instruct_no]
-    if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1] and time not in b_map[me_y][me_x + 1]:
-        ans.append("r")
-        instruct_no += 1
-        if walk_map(b_map, me_x + 1, me_y, longest_fly, time + 1, ans, instruct_no):
-            return True
-        else:
-            ans = ans[0:instruct_no]
-    if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x] and time not in b_map[me_y - 1][me_x]:
-        ans.append("u")
-        instruct_no += 1
-        if walk_map(b_map, me_x, me_y - 1, longest_fly, time + 1, ans, instruct_no):
-            return True
-        else:
-            ans = ans[0:instruct_no]
-    if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x] and time not in b_map[me_y + 1][me_x]:
-        ans.append("d")
-        instruct_no += 1
-        if walk_map(b_map, me_x, me_y + 1, longest_fly, time + 1, ans, instruct_no):
-            return True
-        else:
-            ans = ans[0:instruct_no]        
-    return False
+# Prioritized move directions: prioritize 'd' then 'l'
+MOVE_DIRS = ['d', 'l', 'u', 'r']
 
-def solve(data):
-    row = 0
-    col = 0
-    i = 0
-    while data[i] != '\n':
-        col = col + 1
-        i = i + 1
-    row = row + 1
-    i = i + 1
-    for i in range(i, len(data) - 1):
-        row = row + 1
-        i = i + col + 1
-    b_map = []
-    for y in range(row):
-        temp = []
-        for x in range(col):
-            temp.append([]) 
-        b_map.append(temp)
-    x = 0
-    y = 0
-    longest_fly = 0
-    for val in data:
-        fly = 0
-        if val == '\n':
-            continue
-        if val == 'd':
-            while fly < row - y:
-                b_map[y+fly][x].append(fly)
-                fly = fly + 1
-                if fly > longest_fly:
-                    longest_fly = fly
-        if val == 'u':
-            while fly <= y:
-                b_map[y-fly][x].append(fly)
-                fly = fly + 1
-                if fly > longest_fly:
-                    longest_fly = fly
-        if val == 'r':
-            while fly < col - x:
-                b_map[y][x+fly].append(fly)
-                fly = fly + 1
-                if fly > longest_fly:
-                    longest_fly = fly
-        if val == 'l':
-            while fly <= x:
-                b_map[y][x-fly].append(fly)
-                fly = fly + 1
-                if fly > longest_fly:
-                    longest_fly = fly
-        if val == '*':
-            me_x = x
-            me_y = y
-        x = x + 1
-        if x >= col:
-            x = 0
-            y = y + 1
-    
-    ans = []
-    return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
+def parse_map(map_str):
+    grid = [list(line) for line in map_str.strip().split('\n')]
+    bullets = []
+    player = None
+    for i, row in enumerate(grid):
+        for j, cell in enumerate(row):
+            if cell == '*':
+                player = (i, j)
+            elif cell in DIRS:
+                bullets.append({'pos': (i, j), 'dir': cell})
+    return grid, player, bullets
+
+def move_bullets(bullets, rows, cols):
+    new_bullets = []
+    for bullet in bullets:
+        di, dj = DIRS[bullet['dir']]
+        ni, nj = bullet['pos'][0] + di, bullet['pos'][1] + dj
+        if 0 <= ni < rows and 0 <= nj < cols:
+            new_bullets.append({'pos': (ni, nj), 'dir': bullet['dir']})
+    return new_bullets
+
+def is_safe(pos, bullets_set):
+    return pos not in bullets_set
+
+def serialize_state(player_pos, bullets):
+    bullets_sorted = sorted([tuple(b['pos']) for b in bullets])
+    return (player_pos, tuple(bullets_sorted))
 
 @app.route('/dodge', methods=['POST'])
-def bullet():
-    data = request.get_data(as_text = True)
-    logging.info("data sent for evaluation {}".format(data))
-    solved, ans = solve(data)
-    if solved:
-        json_response = json.dumps({"instructions": ans})
-        return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
-    else:
-        json_response = json.dumps({"instructions": None})
-        return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
+def dodge():
+    input_data = request.get_data(as_text=True)
+    grid, player, bullets = parse_map(input_data)
+    rows, cols = len(grid), len(grid[0])
+
+    # BFS initialization
+    queue = deque()
+    visited = set()
+    initial_state = (player, bullets, [])
+    queue.append(initial_state)
+    visited.add(serialize_state(player, bullets))
+
+    # Define a maximum number of steps to prevent infinite search
+    MAX_STEPS = 100
+
+    while queue:
+        current_player, current_bullets, instructions = queue.popleft()
+
+        if len(instructions) > MAX_STEPS:
+            break
+
+        # Check if current position is safe
+        bullets_set = set(b['pos'] for b in current_bullets)
+        if not is_safe(current_player, bullets_set):
+            continue
+
+        # If no bullets left, return instructions
+        if not current_bullets:
+            return jsonify({"instructions": instructions})
+
+        # Try all possible moves
+        for move in MOVE_DIRS:
+            di, dj = DIRS[move]
+            ni, nj = current_player[0] + di, current_player[1] + dj
+
+            # Check map boundaries
+            if not (0 <= ni < rows and 0 <= nj < cols):
+                continue
+
+            # Check if the new position is safe (no bullet currently)
+            if (ni, nj) in bullets_set:
+                continue
+
+            # Move bullets
+            new_bullets = move_bullets(current_bullets, rows, cols)
+            new_bullets_set = set(b['pos'] for b in new_bullets)
+
+            # Check if the new player position would be safe after bullets move
+            if (ni, nj) in new_bullets_set:
+                continue
+
+            # Serialize the new state
+            new_state = ( (ni, nj), new_bullets, instructions + [move] )
+            serialized = serialize_state((ni, nj), new_bullets)
+            if serialized in visited:
+                continue
+            visited.add(serialized)
+
+            queue.append(new_state)
+
+    # If no safe path found
+    return jsonify({"instructions": None})
+
