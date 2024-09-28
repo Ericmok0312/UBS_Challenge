@@ -117,9 +117,9 @@ def solve(data):
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
 
-# data = ".dd\nr*.\n..."
-# solved, ans = solve(data)
-# print(ans)
+data = ".dd\nr*.\n..."
+solved, ans = solve(data)
+print(ans)
 
 @app.route('/dodge', methods=['POST'])
 def bullet():
