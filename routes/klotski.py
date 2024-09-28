@@ -64,8 +64,6 @@ def evaluate():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
 
-
-
     ans = []
     for i in range(len(data)):
         ans.append(solve(data[i]))
