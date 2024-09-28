@@ -11,6 +11,18 @@ logger = logging.getLogger(__name__)
 def solve(data):
     generation = data["generations"]
     colony = data["colony"]
+#     n = len(colony)
+#     dif = int(colony[0]) - int(colony[-1])
+#     weight = 0
+#     for i in colony:
+#         weight += int(i)
+#     for i in range (generation):
+#         weight = weight + ((n - 1) * weight + dif) - 10 * n
+#         n = 2 * n - 1
+#     return weight
+    
+# print(solve({ "generations": 2, "colony": "914" }))
+    
     result = dict()
     for gen in range(generation+1):
         weight = 0
