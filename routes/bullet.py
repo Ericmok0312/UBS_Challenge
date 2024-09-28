@@ -118,10 +118,10 @@ def solve(data):
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
 
-data = "...........\n....rddl...\n...ddd.....\n.r..d..l..\n.....r.*...\n..dd..rd...\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
-# ".d\n d*"
+data = ".d\nd*"
+# ".d\nd*"
 # ".dd\nr*.\n..."
-
+# "...........\n....rddl...\n...ddd.....\n.r..d..l..\n.....r.*...\n..dd..rd...\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
 # ...........\n
 # ...........\n
 # ...........\n
@@ -149,6 +149,6 @@ def bullet():
     data = request.get_data(as_text = True)
     solved, ans = solve(data)
     if solved:
-        return jsonify({"instructions": ans})
+        return json.dumps({"instructions": ans})
     else:
         return '{"instructions": null}'
