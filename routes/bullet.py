@@ -16,28 +16,28 @@ def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
                 break
         if flag:
             return True
-    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((0 in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or 0 not in b_map[me_y][me_x - 1].keys()):
+    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((time in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or 0 not in b_map[me_y][me_x - 1].keys()):
         ans.append("l")
         instruct_no += 1
         if walk_map(b_map, me_x - 1, me_y, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1].keys() and ((0 in b_map[me_y][me_x + 1].keys() and "l" not in b_map[me_y][me_x + 1][time]) or 0 not in b_map[me_y][me_x + 1].keys()):
+    if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1].keys() and ((time in b_map[me_y][me_x + 1].keys() and "l" not in b_map[me_y][me_x + 1][time]) or time not in b_map[me_y][me_x + 1].keys()):
         ans.append("r")
         instruct_no += 1
         if walk_map(b_map, me_x + 1, me_y, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x].keys() and ((0 in b_map[me_y - 1][me_x].keys() and "d" not in b_map[me_y - 1][me_x][time]) or 0 not in b_map[me_y - 1][me_x].keys()):
+    if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x].keys() and ((time in b_map[me_y - 1][me_x].keys() and "d" not in b_map[me_y - 1][me_x][time]) or time not in b_map[me_y - 1][me_x].keys()):
         ans.append("u")
         instruct_no += 1
         if walk_map(b_map, me_x, me_y - 1, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x].keys() and ((0 in b_map[me_y + 1][me_x].keys() and "u" not in b_map[me_y + 1][me_x][time]) or 0 not in b_map[me_y + 1][me_x].keys()):
+    if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x].keys() and ((time in b_map[me_y + 1][me_x].keys() and "u" not in b_map[me_y + 1][me_x][time]) or time not in b_map[me_y + 1][me_x].keys()):
         ans.append("d")
         instruct_no += 1
         if walk_map(b_map, me_x, me_y + 1, longest_fly, time + 1, ans, instruct_no):
@@ -118,7 +118,7 @@ def solve(data):
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
 
-data = "...........\n...........\n...........\n...........\n.......*...\n...........\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
+data = "...........\n....rddl...\n...ddd.....\n.r..d..l..\n.....r.*...\n..dd..rd...\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
 # ".d\n d*"
 # ".dd\nr*.\n..."
 
@@ -149,6 +149,6 @@ def bullet():
     data = request.get_data(as_text = True)
     solved, ans = solve(data)
     if solved:
-        return json.dumps({"instructions": ans})
+        return jsonify({"instructions": ans})
     else:
         return '{"instructions": null}'
