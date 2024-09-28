@@ -1,4 +1,4 @@
-import re
+import numpy as np
 def parse_input(tables):
     """Parse the input markdown tables into structured data."""
     lab_data = []
@@ -19,67 +19,52 @@ def parse_input(tables):
 
 def evaluate_increment(increments,cell_counts):
     """Evaluate the increment expressions on the list of cell counts."""
-    results = []
-    #print(len(cell_counts))
-    for count, expression in zip(cell_counts, [increments]*len(cell_counts)):
-        #print("count: " +str(count))
-        if 'count' in expression:
-            if '*' in expression:
-                match = re.search(r'count \* (\d+|count)', expression)
-                if match:
-                    factor = match.group(1)
-                    if factor == 'count':
-                        #print(count * count)
-                        results.append(int(count) * int(count))
-                    else:
-                        #print(count * int(factor))
-                        results.append(int(count) * int(factor))
-            elif '+' in expression:
-                match = re.search(r'count \+ (\d+|count)', expression)
-                if match:
-                    addend = match.group(1)
-                    if addend == 'count':
-                        #print(count + count)
-                        results.append(int(count) + int(count))
-                    else:
-                        #print(count + int(addend))
-                        results.append(count + int(addend))
+    op = increments.split(" ")
+    cell_counts = np.array(cell_counts)
+    
+    if op[1] == "+":
+        if op[2] == "count":
+            result = (cell_counts + cell_counts)
         else:
-            results.append(count)  # If no valid expression, return the original count
-    #print(results)
-    return results
+            result = (cell_counts + int(op[2]))
+    else:
+        if op[2] == "count":
+            result = (cell_counts * cell_counts)
+        else:
+            result = (cell_counts * int(op[2]))
+    
+
+    return result.astype('float128').tolist()
+
 
 def simulate_labs(lab_data):
     """Simulate the lab work for 10,000 days and return the analysis counts."""
     days = {i * 1000: [0] * 8 for i in range(1, 11)}  # Track counts for 10,000 days
     current_counts = {i: lab_data[i]["cell_counts"] for i in range(8)}  # Keep track of current counts in each lab
 
-    for day in range(1):
+    for day in range(10):
         for lab_idx in range(8):
-            if True:
-                dish = lab_data[lab_idx]
-                cell_count = evaluate_increment(dish["increment"], dish["cell_counts"])
-                #for  i in range(len(cell_count)):
-                    #cell_count[i] = min(10000, cell_count[i])
-                #print("cell_count: "+str(cell_count))
-                condition, pass_if_true, pass_if_false = dish["condition"]
 
-                # Check condition and pass to the appropriate lab
+            dish = lab_data[lab_idx]
+            cell_count = evaluate_increment(dish["increment"], dish["cell_counts"])
 
-                for i in range(len(cell_count)):
-                    if (cell_count[i] % int(condition)) == 0:
-                        current_counts[pass_if_true].append(cell_count[i])
-                    else:
-                        current_counts[pass_if_false].append(cell_count[i])
+            condition, pass_if_true, pass_if_false = dish["condition"]
 
-                # Increment the count for the current lab
+            for i in range(len(cell_count)):
+                if (cell_count[i] % condition) == 0:
+                    current_counts[pass_if_true].append(cell_count[i])
+                else:
+                    current_counts[pass_if_false].append(cell_count[i])
 
-                sum = len(current_counts[lab_idx])
+            # Increment the count for the current lab
 
-                days[int(int(day / 1000) + 1) * 1000][lab_idx]  += sum
-                current_counts[lab_idx] = []
-                for i in range(8):
-                    lab_data[i]["cell_counts"]=current_counts[i]
+            sum = len(current_counts[lab_idx])
+
+            days[int(int(day / 1000) + 1) * 1000][lab_idx]  += sum
+            current_counts[lab_idx] = []
+            for i in range(8):
+                lab_data[i]["cell_counts"]=current_counts[i]
+            print(lab_data)
 
     return days
 
