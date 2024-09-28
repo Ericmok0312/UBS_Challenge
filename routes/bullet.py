@@ -1,8 +1,6 @@
 import json
 import logging
 
-from flask import request
-
 from routes import app
 
 logger = logging.getLogger(__name__)
@@ -125,6 +123,7 @@ def solve(data):
 #     print({"instructions": ans})
 # else:
 #     print({"instructions": None})
+
 
 @app.route('/dodge', methods=['POST'])
 def bullet():
