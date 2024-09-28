@@ -9,46 +9,28 @@ from routes import app
 
 def max_bugsfixed(bugseq1):
     # Sort bugs by their deadlines (second element in each pair)
-    combination = generate_permutations(bugseq1)
-    max_bugs = 0
-    for bugseq in combination:
-        current_time = 0
-        bugs_fixed = 0
-
-        for difficulty, limit in bugseq:
-            if current_time + difficulty <= limit:
-                current_time += difficulty
-                bugs_fixed += 1
-        
-        if bugs_fixed > max_bugs:
-            max_bugs = bugs_fixed
-
-    return max_bugs
-
-
-
-def generate_permutations(seqs):
-    # Base case: if the list has only one sequence, return it
-    if len(seqs) == 1:
-        return [seqs]
+    bugseq1.sort(key=lambda x: x[1])
     
-    # Initialize result list
-    result = []
+    # Find the maximum deadline
+    max_deadline = max(bugseq1, key=lambda x: x[1])[1]
     
-    # Iterate over the sequences
-    for i, seq in enumerate(seqs):
-        # Get the remaining sequences
-        remaining_seqs = seqs[:i] + seqs[i+1:]
-        
-        # Generate permutations of the remaining sequences
-        remaining_perms = generate_permutations(remaining_seqs)
-        
-        # Add the current sequence to each permutation
-        for perm in remaining_perms:
-            result.append([seq] + perm)
+    # Initialize the dp array with zeros
+    dp = [0] * (max_deadline + 1)
     
-    # Return the result
-    return result
+    # Iterate over each bug
+    for difficulty, limit in bugseq1:
+        # Update the dp array in reverse to avoid overwriting values
+        for t in range(limit, difficulty - 1, -1):
+            dp[t] = max(dp[t], dp[t - difficulty] + 1)
+    
+    # The maximum number of bugs fixed is the maximum value in the dp array
+    return max(dp)
+
+# # Example usage
+# bugseq1 = [(20, 330), (30, 135), (110, 330), (210, 330)]
+# print(max_bugsfixed(bugseq1))  # Output should be 3
+
+
 
 
 @app.route('/bugfixer/p2', methods=['POST'])
@@ -64,3 +46,5 @@ def bugfixerp2():
     json_response = json.dumps(ans)
         
     return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
+
+
