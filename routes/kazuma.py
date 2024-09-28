@@ -7,43 +7,44 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 
-
-result = []
-
 def kazuma_solver(monsters):
-    if len(monsters) == 1:
-        result.append(0)
+    nums = []
+    
+    if len(monsters) < 2:
         return 0
-    if len(monsters) == 2:
-        if monsters[0] < monsters[1]:
-            result.append(monsters[1] - monsters[0])
-            return 2
+    
+    for i in range(1, len(monsters)):
+        nums.append(monsters[i] - monsters[i-1])
+    
+    n = len(nums)
+    if n <= 2:
+        return max(sum(nums), 0)
+    
+    dp = [[0, 0] for _ in range(n)]
+    
+    # Base cases
+    dp[0][0] = nums[0]
+    dp[0][1] = 0
+    
+    # Fill dp table
+    for i in range(1, n):
+        if i >= 2:
+            dp[i][0] = max(dp[i-1][0], dp[i-2][0] + nums[i])
         else:
-            result.append(0)
-            return 0
-    cooldown = kazuma_solver(monsters[1:])
-    if cooldown == 0 :
-        if monsters[0] < monsters[1]:
-            result.append(monsters[1] - monsters[0])
-            return 2
-        else:
-            result.append(0)
-            return cooldown - 1
-    elif monsters[1] - monsters[0] > result[-1]:
-        result[-1] = monsters[1] - monsters[0]
-        return 2
-    else:
-        return cooldown - 1    
+            dp[i][0] = max(dp[i-1][0], 0)
+        
+        dp[i][1] = max(dp[i-1][1], dp[i-2][1])
+    
+    return max(dp[-1])
 
-# monsters = [1, 6, 17, 11, 12, 14]
-# kazuma_solver(monsters)
-# efficiency = sum(result)
-# print(efficiency)
+
+monsters = [1, 6, 17, 11, 12, 14]
+efficiency = kazuma_solver(monsters)
+print(efficiency)
 
 @app.post('/wordle-game')
 def solve_kazuma():
     data = request.get_json()
     monsters = data.get("monsters")
-    kazuma_solver(monsters)
-    efficiency = sum(result)
+    efficinecy = kazuma_solver(monsters)
     return {"efficiency": efficiency}
