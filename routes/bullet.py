@@ -5,8 +5,6 @@ import copy
 import json
 import logging
 
-from flask import request
-
 from routes import app
 
 # Directions mapping
@@ -111,4 +109,3 @@ def dodge():
 
     # If no safe path found
     return jsonify({"instructions": None})
-

@@ -96,7 +96,6 @@ from flask import Flask, request, jsonify
 import json
 from collections import defaultdict, Counter
 
-
 import json
 import logging
 
@@ -104,18 +103,33 @@ from flask import request
 
 from routes import app
 
-
 # Sample Word List
 # For a complete solution, replace this list with the full Wordle word list.
-WORD_LIST = [line for line in open("./routes/word.txt", "r").read().splitlines()]
-
-
+WORD_LIST = [line.lower() for line in open("./routes/word.txt", "r").read().splitlines()]
 
 # Precompute letter frequency for heuristic
 letter_freq = Counter()
 for word in WORD_LIST:
     unique_letters = set(word)
     letter_freq.update(unique_letters)
+
+def validate_input(guess_history, evaluation_history):
+    if not isinstance(guess_history, list) or not isinstance(evaluation_history, list):
+        return False
+    if len(guess_history) != len(evaluation_history):
+        return False
+    for guess, evaluation in zip(guess_history, evaluation_history):
+        if not isinstance(guess, str) or not isinstance(evaluation, str):
+            return False
+        if len(guess) != len(evaluation):
+            return False
+        for char in guess:
+            if char not in WORD_LIST[0]:
+                return False
+        for char in evaluation:
+            if char not in ['?', 'O', 'X', '-']:
+                return False
+    return True
 
 def filter_words(guess_history, evaluation_history):
     possible_words = set(WORD_LIST)
@@ -149,7 +163,6 @@ def filter_words(guess_history, evaluation_history):
         # After processing all positions, update possible_words by excluding excluded_letters
         if excluded_letters:
             possible_words = {word for word in possible_words if not any(letter in word for letter in excluded_letters)}
-    
     # Further filter words that satisfy required_letters counts
     for letter, count in required_letters.items():
         possible_words = {word for word in possible_words if word.count(letter) >= count}
@@ -176,11 +189,8 @@ def wordle_game():
         guess_history = data.get('guessHistory', [])
         evaluation_history = data.get('evaluationHistory', [])
 
-        if not isinstance(guess_history, list) or not isinstance(evaluation_history, list):
-            return jsonify({"error": "Invalid input format. 'guessHistory' and 'evaluationHistory' should be lists."}), 400
-
-        if len(guess_history) != len(evaluation_history):
-            return jsonify({"error": "'guessHistory' and 'evaluationHistory' must be of the same length."}), 400
+        if not validate_input(guess_history, evaluation_history):
+            return jsonify({"error": "Invalid input format. 'guessHistory' and 'evaluationHistory' should be lists of strings."}), 400
 
         # If no guesses yet, suggest an opening guess
         if not guess_history:
@@ -202,6 +212,16 @@ def wordle_game():
 
         return jsonify({"guess": next_guess})
 
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON input."}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+
+
 
