@@ -68,8 +68,6 @@ def klotski():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
 
-    print(data)
-
 
     ans = []
     for i in range(len(data)):
