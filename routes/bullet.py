@@ -117,9 +117,14 @@ def solve(data):
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
 
-data = ".dd\nr*.\n..."
-solved, ans = solve(data)
-print(ans)
+# data = ".d\nd*"
+# # ".d\n d*"
+# # ".dd\nr*.\n..."
+# solved, ans = solve(data)
+# if solved:
+#     print({"instructions": ans})
+# else:
+#     print({"instructions": None})
 
 @app.route('/dodge', methods=['POST'])
 def bullet():
@@ -128,4 +133,4 @@ def bullet():
     if solved:
         return json.dumps({"instructions": ans})
     else:
-        return json.dumps({"instructions": None})
+        return '{"instructions": null}'
