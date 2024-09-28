@@ -5,7 +5,7 @@ import logging
 from flask import jsonify
 from flask import request
 
-from routes import app
+# from routes import app
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class interpreter:
         if argname[0] in self.arguments:
             return False
         self.arguments[argname[0]] = argname[1] #may need change here
-        return 'null'
+        return None
     
     def st_concat(self, *arg):
         if(not(len(arg) == 2)):
@@ -422,7 +422,7 @@ class interpreter:
                 inWord = not inWord
             if input[index] == '(':
                 result = self.interpreter_func(input[index + 1:])
-                if not result:
+                if result == False:
                     return False
                 else:
                     statement.append(result)
@@ -554,7 +554,7 @@ data = {
 # 2024-09-28 15:37:16,454 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:16] "POST /lisp-parser HTTP/1.1" 200 -
 # "expressions": ['(puts (replace "hello world" "world" ""))']
 # 2024-09-28 15:37:16,828 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:16] "POST /lisp-parser HTTP/1.1" 200 -
-# ////////////////////////////////"expressions": ['(puts (replace (replace (concat (uppercase "WibFzOkX^yTJsydNtgn>J3N") (lowercase "u@sej[xPo;wQ^MagCy1]][<q0m70cilCmmhydepb<y0bf=?O0XIbhH01y`S_Nbs15b]K7XP^EK>Zgo?WOi84paPrurnwD9nm^nYq_2OOS=qS=B4FJPg1400ryg")) "l" "x") "o" "y"))']
+# "expressions": ['(puts (replace (replace (concat (uppercase "WibFzOkX^yTJsydNtgn>J3N") (lowercase "u@sej[xPo;wQ^MagCy1]][<q0m70cilCmmhydepb<y0bf=?O0XIbhH01y`S_Nbs15b]K7XP^EK>Zgo?WOi84paPrurnwD9nm^nYq_2OOS=qS=B4FJPg1400ryg")) "l" "x") "o" "y"))']
 # 2024-09-28 15:37:17,198 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:17] "POST /lisp-parser HTTP/1.1" 200 -
 # "expressions": ['(puts (str (not_equal (abs (subtract 5169 -2382)) -8376)))', '(puts (str (gt (multiply 111 -801 -760) 4060)))', '(puts (str (lt (divide 2982 -6617) (multiply -3433 5345))))']
 # 2024-09-28 15:37:17,575 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:17] "POST /lisp-parser HTTP/1.1" 200 -
@@ -562,7 +562,7 @@ data = {
 # 2024-09-28 15:37:17,962 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:17] "POST /lisp-parser HTTP/1.1" 200 -
 # "expressions": ['(set a null)', '(set b (concat "E>Zfbjcoj^<" "^[EEPrRK6z`Bxj`Iec3F];7dLX:`3XtOZVXpv7V9r][4isW3OMEr:<mX@<VnYg<W=Io"))', '(puts (str (equal a b)))', '(set c (equal null a))', '(puts (str (equal (str c) "I8X=z@Zm_8ToJw>rkPk6aw<Z;L=1WRIbo>g6fzwzJ>e2dFOnF<G?e0YL0s:2FDj`l@4GAG[9GV=v1?9_ILcdAdS>QT12Y5BhhFdX[?nj>MmH9WBD6SNjTR4TU6s^NB:957c0mPkiEKPDBTa]S6")))', '(puts (str (equal a "fTgaSs2nYM1luzkk5AbUm8GB:bXuNzaBPg6gF=4O_ASSH[k<hWxXHqOPLRE=iTtXDCJd0cy6Dftb6<[Iz^0;<vNpJ3@3y87P;ercE6gD?[=`^i;z^^KElg`CTq<9K_1Hp0@9p47t3q[SVQ_15xth")))']
 # 2024-09-28 15:37:18,339 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:18] "POST /lisp-parser HTTP/1.1" 200 -
-# "expressions": ['(set a (add 6252 (multiply (subtract -5547 (divide 5201 -4785)) (add 1466 (max -6727 5553 -3340)))))', '(set b (concat (uppercase (str (subtract a (divide -2449 -1786)))) "hR@`t<Dav[Gdk:02YzO[<5?PZj0tcpU>DnmO:@j4gGprB;7:;fz8m6Mb9Z:zb0Xccv0XPlMt]Fd`WY_t]S1TVWsxWvNGaL>S:bBTZQwn1q9KR9wBRT>kL:`Vj4[kigA^T_nKBPsK:5R3:=LS_eK3`u8?@"))', '(set c (subtract (multiply (add -8715 1423) (max (subtract 2612 -5893) 2897)) (min -3984 -342)))', '(set d (replace b "ms?fE`BxJYhO]I7bB9_rL5Kj5D2g]b[7x=fenRcv8nyS75wF`2Q`v57`p?d7aVE;?S?tMSLECOkb^>" (str c)))', '(puts (str c))', '(puts (lowercase (concat d "xzWILeb4rJMzWZcnqrZQiyk?N2dK@OWrK_M7e61l1e>tzNC52DuUrpCNYRYTM=u5TvqPtT0;^lVdZS^I<mzKdMxUGzub;lXMMb8sdkmgpB[KpIAM>OsXt<kdAy1iJ^Qt>MNwn`")))', '(set e (divide c (multiply (subtract c (divide -8625 9276)) 5190)))', '(puts (str e))']
+"expressions": ['(set a (add 6252 (multiply (subtract -5547 (divide 5201 -4785)) (add 1466 (max -6727 5553 -3340)))))', '(set b (concat (uppercase (str (subtract a (divide -2449 -1786)))) "hR@`t<Dav[Gdk:02YzO[<5?PZj0tcpU>DnmO:@j4gGprB;7:;fz8m6Mb9Z:zb0Xccv0XPlMt]Fd`WY_t]S1TVWsxWvNGaL>S:bBTZQwn1q9KR9wBRT>kL:`Vj4[kigA^T_nKBPsK:5R3:=LS_eK3`u8?@"))', '(set c (subtract (multiply (add -8715 1423) (max (subtract 2612 -5893) 2897)) (min -3984 -342)))', '(set d (replace b "ms?fE`BxJYhO]I7bB9_rL5Kj5D2g]b[7x=fenRcv8nyS75wF`2Q`v57`p?d7aVE;?S?tMSLECOkb^>" (str c)))', '(puts (str c))', '(puts (lowercase (concat d "xzWILeb4rJMzWZcnqrZQiyk?N2dK@OWrK_M7e61l1e>tzNC52DuUrpCNYRYTM=u5TvqPtT0;^lVdZS^I<mzKdMxUGzub;lXMMb8sdkmgpB[KpIAM>OsXt<kdAy1iJ^Qt>MNwn`")))', '(set e (divide c (multiply (subtract c (divide -8625 9276)) 5190)))', '(puts (str e))']
 # 2024-09-28 15:37:18,712 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:18] "POST /lisp-parser HTTP/1.1" 200 -
 # "expressions": ['(puts (str (not_equal null (abs -1003.7925))))', '(puts (uppercase (concat "HyR2YdYxB[LQJG0]u" (lowercase "AkLEMcW9Vd>"))))']
 # 2024-09-28 15:37:19,088 werkzeug     INFO     127.0.0.1 - - [28/Sep/2024 15:37:19] "POST /lisp-parser HTTP/1.1" 200 -
@@ -615,30 +615,45 @@ data = {
     
     
 }
-ans = []
+ans = '{"output": '
 for index, input in enumerate(data["expressions"]):
     result = inter.interpreter_func(input)
     print(result)
-    if result:
-        ans.append(result[0].strip("\""))
+    if result != False:
+        if result[0] == None:
+            ans += ('null, ')
+        else:
+            ans += ('\"' + result[0].strip("\"") + '", ')
     else:
-        ans.append("ERROR at line " + str(index + 1))
+        ans += ("ERROR at line " + str(index + 1))
         break
-print({"output": ans})
-        
+ans += '}'
+print(ans)
 
-@app.route('/lisp-parser', methods=['POST'])
+# @app.route('/lisp-parser', methods=['POST'])
 def square():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
-    ans = []
+    # ans = []
+    # for index, input in enumerate(data["expressions"]):
+    #     result = inter.interpreter_func(input)
+    #     print(result)
+    #     if result:
+    #         ans.append(result[0].strip("\""))
+    #     else:
+    #         ans.append("ERROR at line " + str(index + 1))
+    #         break
+    ans = '{"output": '
     for index, input in enumerate(data["expressions"]):
         result = inter.interpreter_func(input)
         print(result)
-        if result:
-            ans.append(result[0].strip("\""))
+        if result != False:
+            if result[0] == None:
+                ans += ('null, ')
+            else:
+                ans += ('\"' + result[0].strip("\"") + '", ')
         else:
-            ans.append("ERROR at line " + str(index + 1))
+            ans += ("ERROR at line " + str(index + 1))
             break
-    # print({"output": ans})
-    return jsonify({"output": ans})
+        ans += '}'
+    return ans
