@@ -1,31 +1,65 @@
-
+from collections import defaultdict,deque
 def solve(data):
-    generation = data["generations"]
-    colony = data["colony"]
-    result = dict()
-    for gen in range(generation+1):
-        weight = 0
-        for i in range(len(colony)-1):
-            left = colony[i]
-            right = colony[i+1]
-            if not (left, right) in result:
-                result[(left,right)]  =  int((10+int(left)-int(right))%10)
+    dependencies = data['prerequisites']
+    durations = data['time']
+    tasks = list(range(1, len(data)+1))
 
-        for i in range(len(colony)):
-            weight+=int(colony[i])
+        # Step 1: Build the graph and in-degrees
+    graph = defaultdict(list)
+    in_degree = defaultdict(int)
+    
+    for u, v in dependencies:
+        graph[u].append(v)
+        in_degree[v] += 1
 
-        next_colon = ""
-        for i in range(len(colony)-1):
-            next_colon += colony[i]
-            next_colon += str(result[(colony[i], colony[i+1])]+weight)[-1]
-        
-        next_colon += colony[-1]
-        print(weight)
-        colony = next_colon
-    return weight
+    # Step 2: Topological Sort
+    queue = deque([task for task in tasks if in_degree[task] == 0])
+    topological_order = []
+    
+    while queue:
+        node = queue.popleft()
+        topological_order.append(node)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    # Step 3: Calculate earliest start and finish times
+    earliest_start = {task: 0 for task in tasks}
+    earliest_finish = {task: 0 for task in tasks}
+    
+    for node in topological_order:
+        earliest_finish[node] = earliest_start[node] + durations[node - 1]
+        for neighbor in graph[node]:
+            earliest_start[neighbor] = max(earliest_start.get(neighbor,0), earliest_finish.get(node,0))
+
+    # Step 4: Calculate latest start and finish times
+    latest_finish = {task: float('inf') for task in tasks}
+    latest_start = {task: float('inf') for task in tasks}
+    
+    for task in reversed(topological_order):
+        if not graph[task]:  # If no successors
+            latest_finish[task] = earliest_finish[task]
+            latest_start[task] = latest_finish[task] - durations[task - 1]
+        for neighbor in graph:
+            if task in graph[neighbor]:  # If task is a predecessor
+                latest_finish[task] = min(latest_finish[task], latest_start[neighbor])
+                latest_start[task] = latest_finish[task] - durations[task - 1]
+
+    # Step 5: Identify the critical path
+    critical_path = []
+    for task in tasks:
+        if earliest_start[task] == latest_start[task]:
+            critical_path.append(task)
+
+    return critical_path
 
 
 
-data = { "generations": 50, "colony": "1000" }
 
-solve(data)
+data = {
+        "time": [1, 2, 3, 4, 5],
+        "prerequisites": [(1,2),(3,4),(2,5),(4,5)]
+    }
+print(solve(data))
+#print(solve(data))

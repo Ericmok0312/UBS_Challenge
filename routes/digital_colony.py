@@ -8,29 +8,31 @@ from routes import app
 logger = logging.getLogger(__name__)
 
 
-def solve(data):
-    generation = data["generations"]
-    colony = data["colony"]
-    result = dict()
-    for gen in range(generation+1):
-        weight = 0
-        for i in range(len(colony)-1):
-            left = colony[i]
-            right = colony[i+1]
-            if not (left, right) in result:
-                result[(left,right)]  =  int((10+int(left)-int(right))%10)
+import numpy as np
 
-        for i in range(len(colony)):
-            weight+=int(colony[i])
+def solve_optimized(data):
+    generations = data["generations"]
+    colony_str = data["colony"]
+    colony = np.array([int(c) for c in colony_str])  # Use NumPy array
+    n = len(colony)
+    result = np.zeros((10, 10), dtype=int)  # Pre-compute weights
 
-        if(gen < generation):
-            next_colon = ""
-            for i in range(len(colony)-1):
-                next_colon += colony[i]
-                next_colon += str(result[(colony[i], colony[i+1])]+weight)[-1]
-            
-            next_colon += colony[-1]
-            colony = next_colon
+    for i in range(10):
+        for j in range(10):
+            result[i, j] = (10 + i - j) % 10
+
+    for gen in range(generations + 1):
+        weight = np.sum(colony)  # Efficient sum using NumPy
+
+        if gen < generations:
+            next_colony = []
+            for i in range(n - 1):
+                next_colony.append(colony[i])
+                next_colony.append(result[colony[i], colony[i+1]] + weight)  #Efficient lookup
+            next_colony.append(colony[-1])
+            colony = np.array(next_colony)
+            n = len(colony)
+
     return str(weight)
 
 
