@@ -1,12 +1,9 @@
-from fastapi import FastAPI
 from flask import request
 import logging
 from routes import app
+import json
+
 logger = logging.getLogger(__name__)
-
-app = FastAPI()
-
-
 
 def kazuma_solver(monsters, efficiency, can_shoot):
     if (len(monsters)==0):
@@ -20,14 +17,14 @@ def kazuma_solver(monsters, efficiency, can_shoot):
             res1 = kazuma_solver(monsters[2:], efficiency+monsters[0], not can_shoot) #shoot 
             res2 = kazuma_solver(monsters[1:], efficiency-monsters[0], can_shoot)
             res3 = kazuma_solver(monsters[1:], efficiency, can_shoot)
-        
-        return max(res1, res2,res3)
+    return max(res1, res2,res3)
 
-@app.post('/wordle-game')
+@app.route('/efficient-hunter-kazuma', methods = ['POST'])
 def solve_kazuma():
     data = request.get_json()
-    monsters = data.get("monsters")
+
     ans = []
-    for i in range(len(monsters)):
-        ans.append({"efficiency": kazuma_solver(monsters, 0, false)})
-    return ans
+    for i in range(len(data)):
+        ans.append({"efficiency": kazuma_solver(data[i].get("monsters"), 0, False)})
+        json_response = json.dumps(ans)
+    return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
