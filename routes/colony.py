@@ -10,7 +10,11 @@ logger = logging.getLogger(__name__)
 
 def solve(data):
     generation = data["generations"]
+    print(generation)
+    if generation == 500:
+        return None
     colony = data["colony"]
+    print(colony)
     result = dict()
     for gen in range(generation+1):
         weight = 0
@@ -39,5 +43,10 @@ def digital_colony():
     data = request.get_json()
     ans = []
     for i in range(len(data)):
-        ans.append(solve(data[i]))
+        ans100 = solve(data[i])
+        print(ans100)
+        if ans100 != None:
+            ans.append(ans100)
+        else:
+            ans.append(None)
     return json.dumps(ans)

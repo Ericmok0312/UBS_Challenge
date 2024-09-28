@@ -11,32 +11,32 @@ def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
     if time == longest_fly:
         return True
     if time + 1 not in b_map[me_y][me_x]:
-        for val in b_map[me_y][me_x]:
+        for val in b_map[me_y][me_x].keys():
             if val > time:
                 break
         return True
-    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1] and time not in b_map[me_y][me_x - 1]:
+    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((0 in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or 0 not in b_map[me_y][me_x - 1].keys()):
         ans.append("l")
         instruct_no += 1
         if walk_map(b_map, me_x - 1, me_y, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1] and time not in b_map[me_y][me_x + 1]:
+    if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1].keys() and ((0 in b_map[me_y][me_x + 1].keys() and "l" not in b_map[me_y][me_x + 1][time]) or 0 not in b_map[me_y][me_x + 1].keys()):
         ans.append("r")
         instruct_no += 1
         if walk_map(b_map, me_x + 1, me_y, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x] and time not in b_map[me_y - 1][me_x]:
+    if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x].keys() and ((0 in b_map[me_y - 1][me_x].keys() and "d" not in b_map[me_y - 1][me_x][time]) or 0 not in b_map[me_y - 1][me_x].keys()):
         ans.append("u")
         instruct_no += 1
         if walk_map(b_map, me_x, me_y - 1, longest_fly, time + 1, ans, instruct_no):
             return True
         else:
             ans = ans[0:instruct_no]
-    if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x] and time not in b_map[me_y + 1][me_x]:
+    if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x].keys() and ((0 in b_map[me_y + 1][me_x].keys() and "u" not in b_map[me_y + 1][me_x][time]) or 0 not in b_map[me_y + 1][me_x].keys()):
         ans.append("d")
         instruct_no += 1
         if walk_map(b_map, me_x, me_y + 1, longest_fly, time + 1, ans, instruct_no):
@@ -61,7 +61,7 @@ def solve(data):
     for y in range(row):
         temp = []
         for x in range(col):
-            temp.append([]) 
+            temp.append({}) 
         b_map.append(temp)
     x = 0
     y = 0
@@ -72,25 +72,37 @@ def solve(data):
             continue
         if val == 'd':
             while fly < row - y:
-                b_map[y+fly][x].append(fly)
+                if fly not in b_map[y+fly][x].keys():
+                    b_map[y+fly][x][fly] = [val]
+                else:
+                    b_map[y+fly][x][fly].append(val)
                 fly = fly + 1
                 if fly > longest_fly:
                     longest_fly = fly
         if val == 'u':
             while fly <= y:
-                b_map[y-fly][x].append(fly)
+                if fly not in b_map[y-fly][x].keys():
+                    b_map[y-fly][x][fly] = [val]
+                else:
+                    b_map[y-fly][x][fly].append(val)
                 fly = fly + 1
                 if fly > longest_fly:
                     longest_fly = fly
         if val == 'r':
             while fly < col - x:
-                b_map[y][x+fly].append(fly)
+                if fly not in b_map[y][x+fly].keys():
+                    b_map[y][x+fly][fly] = [val]
+                else:
+                    b_map[y][x+fly][fly].append(val)
                 fly = fly + 1
                 if fly > longest_fly:
                     longest_fly = fly
         if val == 'l':
             while fly <= x:
-                b_map[y][x-fly].append(fly)
+                if fly not in b_map[y][x-fly].keys():
+                    b_map[y][x-fly][fly] = [val]
+                else:
+                    b_map[y][x-fly][fly].append(val)
                 fly = fly + 1
                 if fly > longest_fly:
                     longest_fly = fly
@@ -104,6 +116,10 @@ def solve(data):
     
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
+
+# data = ".dd\nr*.\n..."
+# solved, ans = solve(data)
+# print(ans)
 
 @app.route('/dodge', methods=['POST'])
 def bullet():

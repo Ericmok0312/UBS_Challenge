@@ -102,9 +102,13 @@ import random
 
 class WordleSolver:
     def __init__(self):
-        self.wrong = [0] * 26
+        self.wrong = []
+        for i in range(26):
+            self.wrong.append(0)
         self.halfCorrect = {}
-        self.confirm = ["none"] * 5
+        self.confirm = []
+        for i in range(5):
+            self.confirm.append("none")
         self.count = 0
         self.characters = "abcdefghijklmnopqrstuvwxyz"
 
@@ -170,6 +174,9 @@ def solve_wordle():
     prevGuess = data.get("guessHistory")[-1]
     evaluation = data.get("evaluationHistory")[-1]
     result = solver.solve(prevGuess, evaluation)
+    print("prev: " + prevGuess)
+    print("evaluation: " + evaluation)
+    print(result)
     
     logging.info("My result: %s", result)
     

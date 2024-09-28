@@ -1,0 +1,42 @@
+[project]
+name = "ngrok"
+readme = "README.md"
+requires-python = ">=3.7"
+platforms = ["linux", "osx", "win32"]
+# https://pypi.org/classifiers/
+classifiers = ["Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS :: MacOS X",
+  "Topic :: Utilities",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: System :: Networking",
+  "Topic :: System :: Networking :: Firewalls"]
+keywords = ["ngrok", "python", "pypi", "pyo3", "ingress", "networking"]
+categories = ["ngrok", "api-bindings", "development-tools::networking", "networking"]
+license = {text = "MIT OR Apache-2.0"}
+
+[project.urls]
+homepage = "https://ngrok.com"
+# documentation = "readthedocs.org"
+repository = "https://github.com/ngrok/ngrok-python"
+changelog = "https://github.com/ngrok/ngrok-python/blob/main/CHANGELOG.md"
+
+[project.scripts]
+ngrok-asgi = "ngrok:__main__.asgi_cli"
+
+[build-system]
+requires = ["maturin>=1.5,<1.6"]
+build-backend = "maturin"
+
+[tool.maturin]
+python-source = "python"
