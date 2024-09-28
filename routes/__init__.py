@@ -8,3 +8,4 @@ import routes.kazuma
 import routes.wordle
 import routes.bugfixer
 import routes.bugfixer2
+import routes.bullet
