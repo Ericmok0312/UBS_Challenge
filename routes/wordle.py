@@ -117,6 +117,7 @@ class WordleSolver:
             if evaluation[i] == '?':
                 continue
             elif evaluation[i] == '-':
+
                 self.wrong[ord(prevGuess[i]) - ord('a')] = -1
             elif evaluation[i] == 'X':
                 if prevGuess[i] not in self.halfCorrect.keys():
@@ -157,7 +158,6 @@ class WordleSolver:
         self.count += 1
         
         return {"newGuess": nextGuess}
-
 
 solver = WordleSolver()
 

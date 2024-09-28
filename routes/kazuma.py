@@ -1,14 +1,9 @@
-
 from flask import request
 import logging
 from routes import app
 import json
 
 logger = logging.getLogger(__name__)
-
-
-
-
 
 def kazuma_solver(monsters, efficiency, can_shoot):
     if (len(monsters)==0):
@@ -22,7 +17,6 @@ def kazuma_solver(monsters, efficiency, can_shoot):
             res1 = kazuma_solver(monsters[2:], efficiency+monsters[0], not can_shoot) #shoot 
             res2 = kazuma_solver(monsters[1:], efficiency-monsters[0], can_shoot)
             res3 = kazuma_solver(monsters[1:], efficiency, can_shoot)
-        
     return max(res1, res2,res3)
 
 @app.route('/efficient-hunter-kazuma', methods = ['POST'])
