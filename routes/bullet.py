@@ -1,18 +1,21 @@
 import json
 import logging
 from flask import request, jsonify
-from routes import app
+# from routes import app
 
 logger = logging.getLogger(__name__)
 
 def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
     if time == longest_fly:
         return True
-    if time + 1 not in b_map[me_y][me_x]:
+    if time + 1 not in b_map[me_y][me_x].keys():
+        flag = True
         for val in b_map[me_y][me_x].keys():
             if val > time:
+                flag = False
                 break
-        return True
+        if flag:
+            return True
     if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((0 in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or 0 not in b_map[me_y][me_x - 1].keys()):
         ans.append("l")
         instruct_no += 1
@@ -115,17 +118,33 @@ def solve(data):
     ans = []
     return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
 
-# data = ".d\nd*"
-# # ".d\n d*"
-# # ".dd\nr*.\n..."
-# solved, ans = solve(data)
-# if solved:
-#     print({"instructions": ans})
-# else:
-#     print({"instructions": None})
+data = "...........\n...........\n...........\n...........\n.......*...\n...........\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
+# ".d\n d*"
+# ".dd\nr*.\n..."
+
+# ...........\n
+# ...........\n
+# ...........\n
+# ...........\n
+# .......*...\n
+# ...........\n
+# uuuuuuu.uuu\n
+# uuuuuu.uuuu\n
+# uuuuu.uuuuu\n
+# uuuu.uuuuuu\n
+# uuu.uuuuuuu\n
+# uuuu.uuuuuu\n
+# ...........\n
+
+solved, ans = solve(data)
+print(solved)
+if solved:
+    print({"instructions": ans})
+else:
+    print({"instructions": None})
 
 
-@app.route('/dodge', methods=['POST'])
+# @app.route('/dodge', methods=['POST'])
 def bullet():
     data = request.get_data(as_text = True)
     solved, ans = solve(data)
