@@ -466,9 +466,10 @@ def square():
     logging.info("data sent for evaluation {}".format(data))
     ans = []
     for index, input in enumerate(data["expressions"]):
-        result = inter.interpreter_func(input)[0].strip("\"")
-        if result != "False":
-            ans.append(result)
+        result = inter.interpreter_func(input)[0]
+        print(result)
+        if result:
+            ans.append(result.strip("\""))
         else:
             ans.append("ERROR at line " + str(index + 1))
     # print({"output": ans})
