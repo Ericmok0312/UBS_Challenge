@@ -5,7 +5,7 @@ import logging
 from flask import jsonify
 from flask import request
 
-# from routes import app
+from routes import app
 
 logger = logging.getLogger(__name__)
 
@@ -630,7 +630,7 @@ for index, input in enumerate(data["expressions"]):
 ans += '}'
 print(ans)
 
-# @app.route('/lisp-parser', methods=['POST'])
+@app.route('/lisp-parser', methods=['POST'])
 def square():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
