@@ -1,46 +1,35 @@
+
 from flask import request
 import logging
 from routes import app
 import json
 
+logger = logging.getLogger(__name__)
 
 
-def kazuma_solver(monsters):
-    nums = []
-    
-    if len(monsters) < 2:
-        return 0
-    
-    for i in range(1, len(monsters)):
-        nums.append(monsters[i] - monsters[i-1])
-    
-    n = len(nums)
-    if n <= 2:
-        return max(sum(nums), 0)
-    
-    dp = [[0, 0] for _ in range(n)]
-    
-    # Base cases
-    dp[0][0] = nums[0]
-    dp[0][1] = 0
-    
-    # Fill dp table
-    for i in range(1, n):
-        if i >= 2:
-            dp[i][0] = max(dp[i-1][0], dp[i-2][0] + nums[i])
-        else:
-            dp[i][0] = max(dp[i-1][0], 0)
+
+
+
+def kazuma_solver(monsters, efficiency, can_shoot):
+    if (len(monsters)==0):
+        return efficiency
+    else:
+        if(not(can_shoot)):
+            res1 = kazuma_solver(monsters[1:], efficiency-monsters[0], not can_shoot) # spell
+            res2 = kazuma_solver(monsters[1:], efficiency, can_shoot)
+            res3 = -999
+        elif(can_shoot):
+            res1 = kazuma_solver(monsters[2:], efficiency+monsters[0], not can_shoot) #shoot 
+            res2 = kazuma_solver(monsters[1:], efficiency-monsters[0], can_shoot)
+            res3 = kazuma_solver(monsters[1:], efficiency, can_shoot)
         
-        dp[i][1] = max(dp[i-1][1], dp[i-2][1])
-    
-    return max(dp[-1])
+    return max(res1, res2,res3)
 
-
-
-@app.route('/kazuma', methods=['POST'])
+@app.route('/efficient-hunter-kazuma', methods = ['POST'])
 def solve_kazuma():
     data = request.get_json()
-    result = []
+
+    ans = []
     for i in range(len(data)):
-        result.append({"efficiency": kazuma_solver(data[i].get("monsters"))})
-    return json.dumps(result)
+        ans.append({"efficiency": kazuma_solver(data[i].get("monsters"), 0, False)})
+    return json.dumps(ans)
