@@ -1,16 +1,66 @@
-def max_bugsfixed(bug_seq):
-    bug_seq.sort(key=lambda x: x[1])
-    current_time = 0
-    max_bugs = 0
+import json
+import logging
 
-    for bug in bug_seq:
-        if bug[1] >= current_time + bug[0]:
-            current_time += bug[0]
-            max_bugs += 1
+from flask import request
+
+from routes import app
+
+
+
+def max_bugsfixed(bugseq1):
+    # Sort bugs by their deadlines (second element in each pair)
+    combination = generate_permutations(bugseq1)
+    max_bugs = 0
+    for bugseq in combination:
+        current_time = 0
+        bugs_fixed = 0
+
+        for difficulty, limit in bugseq:
+            if current_time + difficulty <= limit:
+                current_time += difficulty
+                bugs_fixed += 1
+        
+        if bugs_fixed > max_bugs:
+            max_bugs = bugs_fixed
 
     return max_bugs
 
-# Test cases
-print(max_bugsfixed([[20,30],[30,150],[110,135],[210,330]]))  # Output: 3
-print(max_bugsfixed([[3,2],[4,3]]))  # Output: 0
-print(max_bugsfixed([[5,7]]))  # Output: 1
+
+
+def generate_permutations(seqs):
+    # Base case: if the list has only one sequence, return it
+    if len(seqs) == 1:
+        return [seqs]
+    
+    # Initialize result list
+    result = []
+    
+    # Iterate over the sequences
+    for i, seq in enumerate(seqs):
+        # Get the remaining sequences
+        remaining_seqs = seqs[:i] + seqs[i+1:]
+        
+        # Generate permutations of the remaining sequences
+        remaining_perms = generate_permutations(remaining_seqs)
+        
+        # Add the current sequence to each permutation
+        for perm in remaining_perms:
+            result.append([seq] + perm)
+    
+    # Return the result
+    return result
+
+
+@app.route('/bugfixer/p2', methods=['POST'])
+def bugfixerp2():
+    data = request.get_json()
+    logging.info("data sent for evaluation {}".format(data))
+
+    
+    ans = []
+    for i in range(len(data)):
+        ans.append(max_bugsfixed(data[i].get("bugseq")))
+        
+    json_response = json.dumps(ans)
+        
+    return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
