@@ -32,4 +32,5 @@ def solve_kazuma():
     ans = []
     for i in range(len(data)):
         ans.append({"efficiency": kazuma_solver(data[i].get("monsters"), 0, False)})
-    return json.dumps(ans)
+        json_response = json.dumps(ans)
+    return json_response, 200, {'Content-Type': 'application/json; charset=utf-8'}
