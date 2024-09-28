@@ -1,0 +1,758 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Session Builder" href="session_builder.html" />
+
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>ngrok documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">ngrok  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  
+  <span class="sidebar-brand-text">ngrok  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Listener and Sessions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="session_builder.html">Session Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="listener.html">Listener</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Listener Builders:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="http_listener_builder.html">HTTP Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcp_listener_builder.html">TCP Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tls_listener_builder.html">TLS Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labeled_listener_builder.html">Labeled Listener Builder</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Module:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="module.html">Ngrok Module</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="python-sdk-for-ngrok">
+<h1>Python SDK for ngrok<a class="headerlink" href="#python-sdk-for-ngrok" title="Permalink to this heading">#</a></h1>
+<p><a class="reference external" href="https://pypi.org/project/ngrok"><img alt="PyPI" src="https://img.shields.io/pypi/v/ngrok" /></a>
+<a class="reference external" href="https://pypi.org/project/ngrok"><img alt="Supported Versions" src="https://img.shields.io/pypi/pyversions/ngrok.svg" /></a>
+<a class="reference external" href="https://github.com/ngrok/ngrok-rust/blob/main/LICENSE-MIT"><img alt="MIT licensed" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
+<a class="reference external" href="https://github.com/ngrok/ngrok-rust/blob/main/LICENSE-APACHE"><img alt="Apache-2.0 licensed" src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" /></a>
+<a class="reference external" href="https://github.com/ngrok/ngrok-python/actions/workflows/ci.yml"><img alt="Continuous integration" src="https://github.com/ngrok/ngrok-python/actions/workflows/ci.yml/badge.svg" /></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> is the official Python SDK for ngrok that requires no binaries. Quickly enable secure production-ready connectivity to your applications and services directly from your code.</p>
+<p><a class="reference external" href="https://ngrok.com">ngrok</a> is a globally distributed gateway that provides secure connectivity for applications and services running in any environment.</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> SDK can be installed from <a class="reference external" href="https://pypi.org/project/ngrok">PyPI</a> via <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ngrok
+</pre></div>
+</div>
+</section>
+<section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">#</a></h1>
+<ol class="arabic">
+<li><p><a class="reference internal" href="#installation"><span class="xref myst">Install <code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code></span></a></p></li>
+<li><p>Export your <a class="reference external" href="https://dashboard.ngrok.com/get-started/your-authtoken">authtoken from the ngrok dashboard</a> as <code class="docutils literal notranslate"><span class="pre">NGROK_AUTHTOKEN</span></code> in your terminal</p></li>
+<li><p>Add the following code to your application to establish connectivity via the <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/examples/ngrok-forward-minimal.py">forward method</a> through port <code class="docutils literal notranslate"><span class="pre">9000</span></code> on <code class="docutils literal notranslate"><span class="pre">localhost</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import ngrok python sdk</span>
+<span class="kn">import</span> <span class="nn">ngrok</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="c1"># Establish connectivity</span>
+<span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">9000</span><span class="p">,</span> <span class="n">authtoken_from_env</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Output ngrok url to console</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ingress established at </span><span class="si">{</span><span class="n">listener</span><span class="o">.</span><span class="n">url</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Keep the listener alive</span>
+<span class="k">try</span><span class="p">:</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closing listener&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>That’s it! Your application should now be available through the url output in your terminal.</p>
+<blockquote>
+<div><p><strong>Note</strong>
+You can find more examples in <a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples">the examples directory</a>.</p>
+</div></blockquote>
+</section>
+<section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h1>
+<p>A full quickstart guide and API reference can be found in the <a class="reference external" href="https://ngrok.github.io/ngrok-python/">ngrok-python documentation</a>.</p>
+<section id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading">#</a></h2>
+<p>To use most of ngrok’s features, you’ll need an authtoken. To obtain one, sign up for free at <a class="reference external" href="https://dashboard.ngrok.com/signup">ngrok.com</a> and retrieve it from the <a class="reference external" href="https://dashboard.ngrok.com/get-started/your-authtoken">authtoken page in your ngrok dashboard</a>. Once you have copied your authtoken, you can reference it in several ways.</p>
+<p>You can set it in the <code class="docutils literal notranslate"><span class="pre">NGROK_AUTHTOKEN</span></code> environment variable and pass <code class="docutils literal notranslate"><span class="pre">authtoken_from_env=True</span></code> to the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">forward</a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">authtoken_from_env</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or pass the authtoken directly to the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">forward</a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">authtoken</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or set it for all connections with the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">set_auth_token</a> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">set_auth_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="connection">
+<h2>Connection<a class="headerlink" href="#connection" title="Permalink to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">forward</a> method is the easiest way to start an ngrok session and establish a listener to a specified address. If an asynchronous runtime is running, the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">forward</a> method returns a promise that resolves to the public listener object.</p>
+<p>With no arguments, the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">forward</a> method will start an HTTP listener to <code class="docutils literal notranslate"><span class="pre">localhost</span></code> port <code class="docutils literal notranslate"><span class="pre">80</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can pass the port number to forward on <code class="docutils literal notranslate"><span class="pre">localhost</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">4242</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or you can specify the host and port via a string:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="s2">&quot;localhost:4242&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More options can be passed to the <code class="docutils literal notranslate"><span class="pre">forward</span></code> method to customize the connection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">8080</span><span class="p">,</span> <span class="n">basic_auth</span><span class="o">=</span><span class="s2">&quot;ngrok:online1line&quot;</span><span class="p">})</span>
+<span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">8080</span><span class="p">,</span> <span class="n">oauth_provider</span><span class="o">=</span><span class="s2">&quot;google&quot;</span><span class="p">,</span> <span class="n">oauth_allow_domains</span><span class="o">=</span><span class="s2">&quot;example.com&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The second (optional) argument is the listener type, which defaults to <code class="docutils literal notranslate"><span class="pre">http</span></code>. To create a TCP listener:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">25565</span><span class="p">,</span> <span class="s2">&quot;tcp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Since the options are kwargs, you can also use the <code class="docutils literal notranslate"><span class="pre">**</span></code> operator to pass a dictionary for configuration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;authtoken_from_env&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;response_header_add&quot;</span><span class="p">:</span><span class="s2">&quot;X-Awesome:yes&quot;</span><span class="p">}</span>
+<span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">8080</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#full-configuration"><span class="xref myst">Full Configuration</span></a> for the list of possible configuration options.</p>
+</section>
+<section id="disconnection">
+<h2>Disconnection<a class="headerlink" href="#disconnection" title="Permalink to this heading">#</a></h2>
+<p>To close a listener use the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">disconnect</a> method with the <code class="docutils literal notranslate"><span class="pre">url</span></code> of the listener to close. If there is an asynchronous runtime running the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">disconnect</a> method returns a promise that resolves when the call is complete.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or omit the <code class="docutils literal notranslate"><span class="pre">url</span></code> to close all listeners:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://ngrok.github.io/ngrok-python/ngrok_listener.html">close</a> method on a listener will shut it down, and also stop the ngrok session if it is no longer needed. This method returns a promise that resolves when the listener is closed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">listener</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="list-all-listeners">
+<h2>List all Listeners<a class="headerlink" href="#list-all-listeners" title="Permalink to this heading">#</a></h2>
+<p>To list all current non-closed listeners use the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">get_listeners</a> method. If there is an asynchronous runtime running the <a class="reference external" href="https://ngrok.github.io/ngrok-python/module.html">get_listeners</a> method returns a promise that resolves to the list of listener objects.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listeners</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">get_listeners</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="tls-backends">
+<h2>TLS Backends<a class="headerlink" href="#tls-backends" title="Permalink to this heading">#</a></h2>
+<p>As of version <code class="docutils literal notranslate"><span class="pre">0.10.0</span></code> there is backend TLS connection support, validated by a filepath specified in the <code class="docutils literal notranslate"><span class="pre">SSL_CERT_FILE</span></code> environment variable, or falling back to the host OS installed trusted certificate authorities. So it is now possible to do this to connect:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="s2">&quot;https://127.0.0.1:3000&quot;</span><span class="p">,</span> <span class="n">authtoken_from_env</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the service is using certs not trusted by the OS, such as self-signed certificates, add an environment variable like this before running: <code class="docutils literal notranslate"><span class="pre">SSL_CERT_FILE=/path/to/ca.crt</span></code>. There is also a <code class="docutils literal notranslate"><span class="pre">verify_upstream_tls=False</span></code> option to disable certification verification.</p>
+</section>
+<section id="unix-sockets">
+<h2>Unix Sockets<a class="headerlink" href="#unix-sockets" title="Permalink to this heading">#</a></h2>
+<p>You may also choose to use Unix Sockets instead of TCP. You can view an example of this <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/examples/ngrok-http-full.py">here</a>.</p>
+<p>A socket address may be passed directly into the listener <code class="docutils literal notranslate"><span class="pre">forward()</span></code> call as well by prefixing the address with <code class="docutils literal notranslate"><span class="pre">unix:</span></code>, for example <code class="docutils literal notranslate"><span class="pre">unix:/tmp/socket-123</span></code>.</p>
+</section>
+<section id="builders">
+<h2>Builders<a class="headerlink" href="#builders" title="Permalink to this heading">#</a></h2>
+<p>For more control over Sessions and Listeners, the builder classes can be used.</p>
+<p>A minimal example using the builder class looks like <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/examples/ngrok-http-minimal.py">the following</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">create_listener</span><span class="p">():</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">NgrokSessionBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">authtoken_from_env</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="n">listener</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">http_endpoint</span><span class="p">()</span><span class="o">.</span><span class="n">listen</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ingress established at </span><span class="si">{</span><span class="n">listener</span><span class="o">.</span><span class="n">url</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">listener</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="s2">&quot;localhost:9000&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See here for a <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/examples/ngrok-http-full.py">Full Configuration Example</a></p>
+</section>
+<section id="full-configuration">
+<h2>Full Configuration<a class="headerlink" href="#full-configuration" title="Permalink to this heading">#</a></h2>
+<p>This example shows <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/examples/ngrok-forward-full.py">all the possible configuration items of ngrok.forward</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">listener</span> <span class="o">=</span> <span class="n">ngrok</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
+    <span class="c1"># session configuration</span>
+    <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost:8080&quot;</span><span class="p">,</span>
+    <span class="n">authtoken</span><span class="o">=</span><span class="s2">&quot;&lt;authtoken&gt;&quot;</span><span class="p">,</span>
+    <span class="n">authtoken_from_env</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">app_protocol</span><span class="o">=</span><span class="s2">&quot;http2&quot;</span><span class="p">,</span>
+    <span class="n">session_metadata</span><span class="o">=</span><span class="s2">&quot;Online in One Line&quot;</span><span class="p">,</span>
+    <span class="c1"># advanced session connection configuration</span>
+    <span class="n">server_addr</span><span class="o">=</span><span class="s2">&quot;example.com:443&quot;</span><span class="p">,</span>
+    <span class="n">root_cas</span><span class="o">=</span><span class="s2">&quot;trusted&quot;</span><span class="p">,</span>
+    <span class="n">session_ca_cert</span><span class="o">=</span><span class="n">load_file</span><span class="p">(</span><span class="s2">&quot;ca.pem&quot;</span><span class="p">),</span>
+    <span class="c1"># listener configuration</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="s2">&quot;example listener metadata from python&quot;</span><span class="p">,</span>
+    <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;&lt;domain&gt;&quot;</span><span class="p">,</span>
+    <span class="n">schemes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTPS&quot;</span><span class="p">],</span>
+    <span class="n">proto</span><span class="o">=</span><span class="s2">&quot;http&quot;</span><span class="p">,</span>
+    <span class="n">proxy_proto</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="c1"># One of: &quot;&quot;, &quot;1&quot;, &quot;2&quot;</span>
+    <span class="n">labels</span><span class="o">=</span><span class="s2">&quot;edge:edghts_2G...&quot;</span><span class="p">,</span>  <span class="c1"># Along with proto=&quot;labeled&quot;</span>
+    <span class="c1"># module configuration</span>
+    <span class="n">basic_auth</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ngrok:online1line&quot;</span><span class="p">],</span>
+    <span class="n">circuit_breaker</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">allow_user_agent</span><span class="o">=</span><span class="s2">&quot;^mozilla.*&quot;</span><span class="p">,</span>
+    <span class="n">deny_user_agent</span><span class="o">=</span><span class="s2">&quot;^curl.*&quot;</span><span class="p">,</span>
+    <span class="n">allow_cidr</span><span class="o">=</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="p">,</span>
+    <span class="n">deny_cidr</span><span class="o">=</span><span class="s2">&quot;10.1.1.1/32&quot;</span><span class="p">,</span>
+    <span class="n">crt</span><span class="o">=</span><span class="n">load_file</span><span class="p">(</span><span class="s2">&quot;crt.pem&quot;</span><span class="p">),</span>
+    <span class="n">key</span><span class="o">=</span><span class="n">load_file</span><span class="p">(</span><span class="s2">&quot;key.pem&quot;</span><span class="p">),</span>
+    <span class="n">mutual_tls_cas</span><span class="o">=</span><span class="n">load_file</span><span class="p">(</span><span class="s2">&quot;ca.crt&quot;</span><span class="p">),</span>
+    <span class="n">oauth_provider</span><span class="o">=</span><span class="s2">&quot;google&quot;</span><span class="p">,</span>
+    <span class="n">oauth_allow_domains</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;domain&gt;&quot;</span><span class="p">],</span>
+    <span class="n">oauth_allow_emails</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;email&gt;&quot;</span><span class="p">],</span>
+    <span class="n">oauth_scopes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;scope&gt;&quot;</span><span class="p">],</span>
+    <span class="n">oauth_client_id</span><span class="o">=</span><span class="s2">&quot;&lt;id&gt;&quot;</span><span class="p">,</span>
+    <span class="n">oauth_client_secret</span><span class="o">=</span><span class="s2">&quot;&lt;id&gt;&quot;</span><span class="p">,</span>
+    <span class="n">oidc_issuer_url</span><span class="o">=</span><span class="s2">&quot;&lt;url&gt;&quot;</span><span class="p">,</span>
+    <span class="n">oidc_client_id</span><span class="o">=</span><span class="s2">&quot;&lt;id&gt;&quot;</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="o">=</span><span class="s2">&quot;&lt;secret&gt;&quot;</span><span class="p">,</span>
+    <span class="n">oidc_allow_domains</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;domain&gt;&quot;</span><span class="p">],</span>
+    <span class="n">oidc_allow_emails</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;email&gt;&quot;</span><span class="p">],</span>
+    <span class="n">oidc_scopes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;scope&gt;&quot;</span><span class="p">],</span>
+    <span class="n">policy</span><span class="o">=</span><span class="s2">&quot;&lt;policy_json&gt;&quot;</span><span class="p">,</span>
+    <span class="n">request_header_remove</span><span class="o">=</span><span class="s2">&quot;X-Req-Nope&quot;</span><span class="p">,</span>
+    <span class="n">response_header_remove</span><span class="o">=</span><span class="s2">&quot;X-Res-Nope&quot;</span><span class="p">,</span>
+    <span class="n">request_header_add</span><span class="o">=</span><span class="s2">&quot;X-Req-Yup:true&quot;</span><span class="p">,</span>
+    <span class="n">response_header_add</span><span class="o">=</span><span class="s2">&quot;X-Res-Yup:true&quot;</span><span class="p">,</span>
+    <span class="n">verify_upstream_tls</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verify_webhook_provider</span><span class="o">=</span><span class="s2">&quot;twilio&quot;</span><span class="p">,</span>
+    <span class="n">verify_webhook_secret</span><span class="o">=</span><span class="s2">&quot;asdf&quot;</span><span class="p">,</span>
+    <span class="n">websocket_tcp_converter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="asgi-runner">
+<h1>ASGI Runner<a class="headerlink" href="#asgi-runner" title="Permalink to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> comes bundled with an ASGI (Asynchronous Server Gateway Interface) runner <code class="docutils literal notranslate"><span class="pre">ngrok-asgi</span></code> that can be used for Uvicorn, Gunicorn, Django and more, with no code.</p>
+<p>To use prefix your start up command for a Uvicorn or Gunicorn web server with either <code class="docutils literal notranslate"><span class="pre">ngrok-asgi</span></code> or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ngrok</span></code>.</p>
+<p>Any TCP or Unix Domain Socket arguments will be used to establish connectivity automatically. The ngrok listener can be configured using command flags, for instance adding <code class="docutils literal notranslate"><span class="pre">--basic-auth</span> <span class="pre">ngrok</span> <span class="pre">online1line</span></code> will introduce basic authentication to the ingress listener.</p>
+<section id="uvicorn">
+<h2>Uvicorn<a class="headerlink" href="#uvicorn" title="Permalink to this heading">#</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic Usage</span>
+ngrok-asgi<span class="w"> </span>uvicorn<span class="w"> </span>mysite.asgi:application
+
+<span class="c1"># With custom host and port</span>
+ngrok-asgi<span class="w"> </span>uvicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--host<span class="w"> </span>localhost<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--port<span class="w"> </span><span class="m">1234</span>
+
+<span class="c1"># Using basic auth</span>
+ngrok-asgi<span class="w"> </span>uvicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--host<span class="w"> </span>localhost<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--port<span class="w"> </span><span class="m">1234</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--basic-auth<span class="w"> </span>ngrok<span class="w"> </span>online1line
+
+<span class="c1"># Using custom sock file</span>
+ngrok-asgi<span class="w"> </span>uvicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--uds<span class="w"> </span>/tmp/uvicorn.sock
+
+<span class="c1"># Using module name</span>
+python<span class="w"> </span>-m<span class="w"> </span>ngrok<span class="w"> </span>uvicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--oauth-provider<span class="w"> </span>google<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--allow-emails<span class="w"> </span>bob@example.com
+</pre></div>
+</div>
+</section>
+<section id="gunicorn">
+<h2>Gunicorn<a class="headerlink" href="#gunicorn" title="Permalink to this heading">#</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic Usage</span>
+ngrok-asgi<span class="w"> </span>gunicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker
+
+<span class="c1"># With custom host and port</span>
+ngrok-asgi<span class="w"> </span>gunicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bind<span class="w"> </span>localhost:1234
+
+<span class="c1"># Using webhook verifications</span>
+ngrok-asgi<span class="w"> </span>gunicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--webhook-verification<span class="w"> </span>twilio<span class="w"> </span>s3cr3t
+
+<span class="c1"># Using custom sock file</span>
+ngrok-asgi<span class="w"> </span>gunicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bind<span class="w"> </span>unix:/tmp/gunicorn.sock
+
+<span class="c1"># Using module name</span>
+python<span class="w"> </span>-m<span class="w"> </span>ngrok<span class="w"> </span>gunicorn<span class="w"> </span>mysite.asgi:application<span class="w"> </span>-k<span class="w"> </span>uvicorn.workers.UvicornWorker<span class="w"> </span>--response-header<span class="w"> </span>X-Awesome<span class="w"> </span>True
+</pre></div>
+</div>
+</section>
+</section>
+<section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h1>
+<section id="listeners">
+<h2>Listeners<a class="headerlink" href="#listeners" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/ngrok-http-minimal.py">HTTP</a></p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/ngrok-http-full.py">Full Configuration Example</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/ngrok-labeled.py">Labeled</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/ngrok-tcp.py">TCP</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/ngrok-tls.py">TLS</a></p></li>
+</ul>
+</section>
+<section id="frameworks">
+<h2>Frameworks<a class="headerlink" href="#frameworks" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/aiohttp-ngrok.py">AIOHTTP</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-sdk-serverless-example">AWS APP Runner</a></p>
+<ul>
+<li><p>with <a class="reference external" href="https://docs.aws.amazon.com/apprunner/latest/dg/service-source-code-python.html">changes for Python</a></p></li>
+</ul>
+</li>
+<li><p>Django</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/django-single-file.py">Single File Example</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/djangosite/manage.py">Modify manage.py Example</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/djangosite/djangosite/ngrok-asgi.py">Modify asgi.py Example</a></p></li>
+<li><p>or <a class="reference internal" href="#asgi-runner"><span class="xref myst">via <code class="docutils literal notranslate"><span class="pre">ngrok-asgi</span></code></span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/flask-ngrok.py">Flask</a></p></li>
+<li><p><a class="reference internal" href="#gunicorn"><span class="xref myst">Gunicorn</span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/hypercorn-http2-ngrok.py">Hypercorn</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/streamlit/streamlit-ngrok.py">Streamlit</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/tornado-ngrok.py">Tornado</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/uvicorn-ngrok.py">Uvicorn</a></p></li>
+</ul>
+</section>
+<section id="machine-learning">
+<h2>Machine Learning<a class="headerlink" href="#machine-learning" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Gradio</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/gradio/gradio-asgi.py">ngrok-asgi Example</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/gradio/gradio-ngrok.py">gradio CLI Example</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/openplayground/run.py">OpenPlayground</a></p></li>
+<li><p><a class="reference external" href="https://github.com/ngrok/ngrok-python/tree/main/examples/gpt4all/run.py">GPT4ALL</a></p></li>
+<li><p><a class="reference external" href="https://github.com/AUTOMATIC1111/stable-diffusion-webui/">Stable Diffusion WebUI</a> by AUTOMATIC1111</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> is now built-in, see the <code class="docutils literal notranslate"><span class="pre">--ngrok</span></code> and <code class="docutils literal notranslate"><span class="pre">--ngrok-options</span></code> arguments.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/oobabooga/text-generation-webui">Text Generation WebUI</a> by oobabooga</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> is now built-in, see the <code class="docutils literal notranslate"><span class="pre">--extension</span> <span class="pre">ngrok</span></code> argument.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="platform-support">
+<h1>Platform Support<a class="headerlink" href="#platform-support" title="Permalink to this heading">#</a></h1>
+<p>Pre-built binaries are provided on PyPI for the following platforms:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>OS</p></th>
+<th class="head"><p>i686</p></th>
+<th class="head"><p>x64</p></th>
+<th class="head"><p>aarch64</p></th>
+<th class="head"><p>arm</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Windows</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>*</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>MacOS</p></td>
+<td><p></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Linux</p></td>
+<td><p></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+</tr>
+<tr class="row-odd"><td><p>Linux musl</p></td>
+<td><p></p></td>
+<td><p>✓</p></td>
+<td><p>✓</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>FreeBSD</p></td>
+<td><p></p></td>
+<td><p>*</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p><strong>Note</strong>
+<code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code>, and <a class="reference external" href="https://github.com/ngrok/ngrok-rust/">ngrok-rust</a> which it depends on, are open source, so it may be possible to build them for other platforms.</p>
+<ul class="simple">
+<li><p>Windows-aarch64 will be supported after the next release of <a class="reference external" href="https://github.com/briansmith/ring/issues/1167">Ring</a>.</p></li>
+<li><p>FreeBSD-x64 is built by the release process, but PyPI won’t accept BSD flavors.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="dependencies">
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>This project relies on <a class="reference external" href="https://pyo3.rs/">PyO3</a>, an excellent system to ease development and building of Rust plugins for Python.</p></li>
+<li><p>Thank you to <a class="reference external" href="https://github.com/OpenIoTHub/ngrok">OpenIoTHub</a> for handing over the ngrok name on PyPI.</p></li>
+</ul>
+</section>
+<section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<p>Changes to <code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> are tracked under <a class="reference external" href="https://github.com/ngrok/ngrok-python/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+</section>
+<section id="join-the-ngrok-community">
+<h1>Join the ngrok Community<a class="headerlink" href="#join-the-ngrok-community" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p>Check out <a class="reference external" href="https://docs.ngrok.com">our official docs</a></p></li>
+<li><p>Read about updates on <a class="reference external" href="https://blog.ngrok.com">our blog</a></p></li>
+<li><p>Open an <a class="reference external" href="https://github.com/ngrok/ngrok-python/issues">issue</a> or <a class="reference external" href="https://github.com/ngrok/ngrok-python/pulls">pull request</a></p></li>
+<li><p>Join our <a class="reference external" href="https://ngrok.com/slack">Slack community</a></p></li>
+<li><p>Follow us on <a class="reference external" href="https://twitter.com/ngrokhq">X / Twitter (&#64;ngrokHQ)</a></p></li>
+<li><p>Subscribe to our <a class="reference external" href="https://www.youtube.com/&#64;ngrokhq">Youtube channel (&#64;ngrokHQ)</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h1>
+<p>This project is dual-licensed under <a class="reference internal" href="#LICENSE-APACHE"><span class="xref myst">Apache, Version 2.0</span></a> and <a class="reference internal" href="#LICENSE-MIT"><span class="xref myst">MIT</span></a>.
+You can choose between one of them if you use this work.</p>
+<section id="contributions">
+<h2>Contributions<a class="headerlink" href="#contributions" title="Permalink to this heading">#</a></h2>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in <code class="docutils literal notranslate"><span class="pre">ngrok-python</span></code> by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.</p>
+</section>
+</section>
+<section id="development-getting-started">
+<h1>Development: Getting Started<a class="headerlink" href="#development-getting-started" title="Permalink to this heading">#</a></h1>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p>a valid Ngrok <code class="docutils literal notranslate"><span class="pre">authtoken</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">make</span></code> available in your PATH</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Update <a class="reference internal" href="#./Cargo.toml"><span class="xref myst">Cargo.toml</span></a> with the <em>latest supported</em> <code class="docutils literal notranslate"><span class="pre">ngrok</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">version</span> <span class="pre">=</span> <span class="pre">&quot;=VERSION_HERE&quot;</span> <span class="pre">}</span></code> from <a class="reference external" href="https://github.com/ngrok/ngrok-rust/blob/main/ngrok/Cargo.toml#L3">ngrok-rust</a>. <code class="docutils literal notranslate"><span class="pre">ngrok-rust</span></code> is used for the bindings in <a class="reference internal" href="#./src"><span class="xref myst">src/rust_files_here.rs</span></a></p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">build</span></code> (builds the <code class="docutils literal notranslate"><span class="pre">rust</span></code> bindings / <code class="docutils literal notranslate"><span class="pre">python</span></code> dependencies)</p></li>
+<li><p>Happy developing!</p></li>
+</ol>
+<br/>
+<p><strong>Example Commands</strong>:</p>
+<p><em>building the project</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>develop
+</pre></div>
+</div>
+<p><em>running the entire test suite</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># running the entire test suite</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGROK_AUTHTOKEN</span><span class="o">=</span><span class="s2">&quot;YOUR_AUTHTOKEN_HERE&quot;</span><span class="p">;</span><span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+<p><em>running an individual test</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># running an individual test</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NGROK_AUTHTOKEN</span><span class="o">=</span><span class="s2">&quot;YOUR_AUTHTOKEN_HERE&quot;</span><span class="p">;</span><span class="w"> </span>make<span class="w"> </span><span class="nv">test</span><span class="o">=</span><span class="s2">&quot;-k TEST_CLASS.NAME_OF_TEST&quot;</span><span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#./Makefile"><span class="xref myst">See the MakeFile for more examples</span></a></p>
+<section id="http2">
+<h2>HTTP2<a class="headerlink" href="#http2" title="Permalink to this heading">#</a></h2>
+<p>The examples include a minimal <code class="docutils literal notranslate"><span class="pre">hypercorn</span></code> HTTP/2 example if you run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">http2</span></code>. You can curl the endpoint logged with <code class="docutils literal notranslate"><span class="pre">INFO:ngrok.listener:Created</span></code> and verify the HTTP/2 response from <code class="docutils literal notranslate"><span class="pre">hypercorn</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--http2<span class="w"> </span>-v<span class="w"> </span>https://&lt;YOUR_LISTENER_URL&gt;
+*<span class="w">   </span>Trying<span class="w"> </span>&lt;YOUR_IP&gt;:443...
+*<span class="w"> </span>Connected<span class="w"> </span>to<span class="w"> </span>a6278d6c07ce.ngrok.app<span class="w"> </span><span class="o">(</span>&lt;YOUR_IP&gt;<span class="o">)</span><span class="w"> </span>port<span class="w"> </span><span class="m">443</span><span class="w"> </span><span class="o">(</span><span class="c1">#0)</span>
+*<span class="w"> </span>ALPN,<span class="w"> </span>offering<span class="w"> </span>h2
+*<span class="w"> </span>ALPN,<span class="w"> </span>offering<span class="w"> </span>http/1.1
+...
+&gt;<span class="w"> </span>GET<span class="w"> </span>/<span class="w"> </span>HTTP/2
+&gt;<span class="w"> </span>Host:<span class="w"> </span>a6278d6c07ce.ngrok.app
+&gt;<span class="w"> </span>user-agent:<span class="w"> </span>curl/7.81.0
+&gt;<span class="w"> </span>accept:<span class="w"> </span>*/*
+&gt;
+...
+&lt;<span class="w"> </span>HTTP/2<span class="w"> </span><span class="m">200</span>
+&lt;<span class="w"> </span>content-type:<span class="w"> </span>text/plain
+&lt;<span class="w"> </span>date:<span class="w"> </span>Fri,<span class="w"> </span><span class="m">01</span><span class="w"> </span>Mar<span class="w"> </span><span class="m">2024</span><span class="w"> </span><span class="m">18</span>:50:23<span class="w"> </span>GMT
+&lt;<span class="w"> </span>ngrok-agent-ips:<span class="w"> </span>&lt;YOUR_AGENT_IP&gt;
+&lt;<span class="w"> </span>ngrok-trace-id:<span class="w"> </span>ed038ace04876818149cf0769bd43e38
+&lt;<span class="w"> </span>server:<span class="w"> </span>hypercorn-h2
+&lt;
+*<span class="w"> </span>TLSv1.2<span class="w"> </span><span class="o">(</span>IN<span class="o">)</span>,<span class="w"> </span>TLS<span class="w"> </span>header,<span class="w"> </span>Supplemental<span class="w"> </span>data<span class="w"> </span><span class="o">(</span><span class="m">23</span><span class="o">)</span>:
+*<span class="w"> </span>TLSv1.2<span class="w"> </span><span class="o">(</span>IN<span class="o">)</span>,<span class="w"> </span>TLS<span class="w"> </span>header,<span class="w"> </span>Supplemental<span class="w"> </span>data<span class="w"> </span><span class="o">(</span><span class="m">23</span><span class="o">)</span>:
+*<span class="w"> </span>Connection<span class="w"> </span><span class="c1">#0 to host &lt;YOUR_LISTENER_URL&gt; left intact</span>
+hello
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Listener and Sessions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="session_builder.html">Session Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="session.html">Session</a></li>
+<li class="toctree-l1"><a class="reference internal" href="listener.html">Listener</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Listener Builders:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="http_listener_builder.html">HTTP Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcp_listener_builder.html">TCP Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tls_listener_builder.html">TLS Listener Builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labeled_listener_builder.html">Labeled Listener Builder</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Module:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="module.html">Ngrok Module</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">#</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="session_builder.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Session Builder</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169;  2023, ngrok
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>

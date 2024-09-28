@@ -169,4 +169,3 @@ def mailtime():
         average_response[user] = avg
 
     return jsonify({"response": average_response})
-
