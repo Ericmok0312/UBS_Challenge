@@ -634,26 +634,15 @@ print(ans)
 def square():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
-    # ans = []
-    # for index, input in enumerate(data["expressions"]):
-    #     result = inter.interpreter_func(input)
-    #     print(result)
-    #     if result:
-    #         ans.append(result[0].strip("\""))
-    #     else:
-    #         ans.append("ERROR at line " + str(index + 1))
-    #         break
-    ans = '{"output": '
+    ans = []
     for index, input in enumerate(data["expressions"]):
         result = inter.interpreter_func(input)
-        print(result)
         if result != False:
             if result[0] == None:
-                ans += ('null, ')
+                ans.append('null')
             else:
-                ans += ('\"' + result[0].strip("\"") + '", ')
+                ans.append(result[0].strip("\""))
         else:
-            ans += ("ERROR at line " + str(index + 1))
+            ans.append("ERROR at line " + str(index + 1))
             break
-        ans += '}'
-    return ans
+    return jsonify({"output": ans})
