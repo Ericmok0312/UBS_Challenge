@@ -42,15 +42,15 @@ class WordleSolver:
                 nextGuess += self.confirm[i]
                 continue
             else:
+                flag = False
                 for val in self.halfCorrect.keys():
                     if i not in self.halfCorrect[val]:
                         nextGuess += val
+                        flag = True
                         break
                 
-                # for j in range(26):
-                #     if self.wrong[j] != -1:
-                #         nextGuess += self.characters[j]
-                #         break
+                if flag:
+                    continue
                 
                 for j in range(26):
                     if self.characters[j] in self.halfCorrect.keys():

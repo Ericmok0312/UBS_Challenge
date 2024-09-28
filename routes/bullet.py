@@ -1,11 +1,16 @@
 import json
 import logging
 from flask import request, jsonify
-from routes import app
+# from routes import app
 
 logger = logging.getLogger(__name__)
 
-def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
+snapshots = {}
+
+def walk_map(b_map, me_x, me_y, longest_fly, time, ans):
+    if (me_x, me_y) in snapshots.keys():
+        if time in snapshots[(me_x, me_y)]:
+            return False
     if time == longest_fly:
         return True
     if time + 1 not in b_map[me_y][me_x].keys():
@@ -16,34 +21,34 @@ def walk_map(b_map, me_x, me_y, longest_fly, time, ans, instruct_no):
                 break
         if flag:
             return True
-    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((time in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or 0 not in b_map[me_y][me_x - 1].keys()):
+    if me_x - 1 >= 0 and time + 1 not in b_map[me_y][me_x - 1].keys() and ((time in b_map[me_y][me_x - 1].keys() and "r" not in b_map[me_y][me_x - 1][time]) or time not in b_map[me_y][me_x - 1].keys()):
         ans.append("l")
-        instruct_no += 1
-        if walk_map(b_map, me_x - 1, me_y, longest_fly, time + 1, ans, instruct_no):
+        if walk_map(b_map, me_x - 1, me_y, longest_fly, time + 1, ans):
             return True
         else:
-            ans = ans[0:instruct_no]
+            ans = ans[0:time]
     if me_x + 1 < len(b_map[me_y]) and time + 1 not in b_map[me_y][me_x + 1].keys() and ((time in b_map[me_y][me_x + 1].keys() and "l" not in b_map[me_y][me_x + 1][time]) or time not in b_map[me_y][me_x + 1].keys()):
         ans.append("r")
-        instruct_no += 1
-        if walk_map(b_map, me_x + 1, me_y, longest_fly, time + 1, ans, instruct_no):
+        if walk_map(b_map, me_x + 1, me_y, longest_fly, time + 1, ans):
             return True
         else:
-            ans = ans[0:instruct_no]
+            ans = ans[0:time]
     if me_y - 1 >= 0 and time + 1 not in b_map[me_y - 1][me_x].keys() and ((time in b_map[me_y - 1][me_x].keys() and "d" not in b_map[me_y - 1][me_x][time]) or time not in b_map[me_y - 1][me_x].keys()):
         ans.append("u")
-        instruct_no += 1
-        if walk_map(b_map, me_x, me_y - 1, longest_fly, time + 1, ans, instruct_no):
+        if walk_map(b_map, me_x, me_y - 1, longest_fly, time + 1, ans):
             return True
         else:
-            ans = ans[0:instruct_no]
+            ans = ans[0:time]
     if me_y + 1 < len(b_map) and time + 1 not in b_map[me_y + 1][me_x].keys() and ((time in b_map[me_y + 1][me_x].keys() and "u" not in b_map[me_y + 1][me_x][time]) or time not in b_map[me_y + 1][me_x].keys()):
         ans.append("d")
-        instruct_no += 1
-        if walk_map(b_map, me_x, me_y + 1, longest_fly, time + 1, ans, instruct_no):
+        if walk_map(b_map, me_x, me_y + 1, longest_fly, time + 1, ans):
             return True
         else:
-            ans = ans[0:instruct_no]        
+            ans = ans[0:time]  
+    if (me_x, me_y) in snapshots.keys():
+        snapshots[(me_x, me_y)].append(time) 
+    else:
+        snapshots[(me_x, me_y)] = [time]  
     return False
 
 def solve(data):
@@ -116,25 +121,9 @@ def solve(data):
             y = y + 1
     
     ans = []
-    return walk_map(b_map, me_x, me_y, longest_fly, 0, ans, 0), ans
+    return walk_map(b_map, me_x, me_y, longest_fly, 0, ans), ans
 
-data = ".d\nd*"
-# ".d\nd*"
-# ".dd\nr*.\n..."
-# "...........\n....rddl...\n...ddd.....\n.r..d..l..\n.....r.*...\n..dd..rd...\nuuuuuuu.uuu\nuuuuuu.uuuu\nuuuuu.uuuuu\nuuuu.uuuuuu\nuuu.uuuuuuu\nuuuu.uuuuuu\n...........\n"
-# ...........\n
-# ...........\n
-# ...........\n
-# ...........\n
-# .......*...\n
-# ...........\n
-# uuuuuuu.uuu\n
-# uuuuuu.uuuu\n
-# uuuuu.uuuuu\n
-# uuuu.uuuuuu\n
-# uuu.uuuuuuu\n
-# uuuu.uuuuuu\n
-# ...........\n
+data = "............\n...l........\n..l.........\n*l..........\n............\n............\n............\n............\n............\n............\n............\n............\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuuu.uuu\nuuuuuuu.uuuu\nuuuuuu.uuuuu\nuuuuu.uuuuuu\nuuuu.uuuuuuu\nuuu.uuuuuuuu\nuu.uuuuuuuuu\nu.uuuuuuuuuu\n.uuuuuuuuuuu\n"
 
 solved, ans = solve(data)
 print(solved)
@@ -144,10 +133,17 @@ else:
     print({"instructions": None})
 
 
-@app.route('/dodge', methods=['POST'])
+# @app.route('/dodge', methods=['POST'])
 def bullet():
     data = request.get_data(as_text = True)
+    print(data)
+    print("1")
     solved, ans = solve(data)
+    print("2")
+    if solved:
+        print({"instructions": ans})
+    else:
+        print('{"instructions": null}')
     if solved:
         return json.dumps({"instructions": ans})
     else:
