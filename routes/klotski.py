@@ -18,10 +18,12 @@ class Block:
 
 
 
-def solve():
-    for i in range(len(data)):
-    mp = data[i]["board"]
-    move = data[i]["moves"]
+def solve(data):
+
+
+
+    mp = data["board"]
+    move = data["moves"]
     location = {}
 
     for j in range(20):
@@ -59,11 +61,14 @@ def solve():
 
     return location_list
 
+
+
 @app.route('/klotski', methods=['POST'])
-def evaluate():
+def klotski():
     data = request.get_json()
     logging.info("data sent for evaluation {}".format(data))
 
+    print(data)
 
 
     ans = []
@@ -71,7 +76,6 @@ def evaluate():
         ans.append(solve(data[i]))
     #ans holds result
 
-    input_value = data.get("input")
-    result = input_value * input_value
-    logging.info("My result :{}".format(result))
-    return json.dumps(result)
+
+
+    return json.dumps(ans)
